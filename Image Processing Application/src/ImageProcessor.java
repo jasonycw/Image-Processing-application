@@ -42,8 +42,16 @@ public class ImageProcessor {
 
 	// TODO: finish the blurring effect
 	public static BufferedImage bokehBlurring(Image img) {
-		Blurring blr = new Blurring(5);
-		BufferedImage bufImg = blr.gaussianBlur(img);
+		// GaussianFilter
+//		Blurring blr = new Blurring(5);
+//		BufferedImage bufImg = blr.gaussianBlur(img);
+		
+		//Lens Blur
+		LensBlurFilter lensBlur = new LensBlurFilter();
+		lensBlur.setSides(10);
+		lensBlur.setBloomThreshold(210);
+		BufferedImage bufImg = lensBlur.filter(convert(img), null);
+		
 		// return back the resulting image in BufferedImage type
 		return bufImg;
 	}

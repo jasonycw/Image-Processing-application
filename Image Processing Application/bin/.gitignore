@@ -18,3 +18,5 @@
 /ImageMath.class
 /PixelUtils.class
 /AbstractBufferedImageOp.class
+/LensBlurFilter.class
+/FFT.class
