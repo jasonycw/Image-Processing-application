@@ -13,3 +13,8 @@
 /save.png
 /small-icon.jpg
 /undo.png
+/Blurring.class
+/ConvolveFilter.class
+/ImageMath.class
+/PixelUtils.class
+/AbstractBufferedImageOp.class

@@ -40,36 +40,10 @@ public class ImageProcessor {
 		return resultImg;
 	}
 
+	// TODO: finish the blurring effect
 	public static BufferedImage bokehBlurring(Image img) {
-		// Convert image from type Image to BufferedImage
-		BufferedImage bufImg = convert(img);
-
-		// Scan through each row of the image
-		for (int j = 0; j < bufImg.getHeight(); j++) {
-			// Scan through each columns of the image
-			for (int i = 0; i < bufImg.getWidth(); i++) {
-				// Returns an integer pixel in the default RGB color model
-				int values = bufImg.getRGB(i, j);
-				// Convert the single integer pixel value to RGB color
-				Color oldColor = new Color(values);
-
-				int red = oldColor.getRed(); // get red value
-				int green = oldColor.getGreen(); // get green value
-				int blue = oldColor.getBlue(); // get blue value
-
-				// Convert RGB to grayscale using formula
-				// gray = 0.299 * R + 0.587 * G + 0.114 * B
-				double grayVal = 0.299 * red + 0.587 * green + 0.114 * blue;
-
-				// Assign each channel of RGB with the same value
-				Color newColor = new Color((int) grayVal, (int) grayVal,
-						(int) grayVal);
-
-				// Get back the integer representation of RGB color
-				// and assign it back to the original position
-				bufImg.setRGB(i, j, newColor.getRGB());
-			}
-		}
+		Blurring blr = new Blurring(5);
+		BufferedImage bufImg = blr.gaussianBlur(img);
 		// return back the resulting image in BufferedImage type
 		return bufImg;
 	}
