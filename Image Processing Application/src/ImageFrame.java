@@ -68,7 +68,8 @@ public class ImageFrame extends JFrame implements ActionListener,
 	private JMenuItem menuItemExit;
 	private JMenuItem menuItemUndo;
 	private JMenuItem menuItemRedo;
-	private JMenuItem menuItemBokehBlurring;
+	private JMenuItem menuItemGaussianFilter;
+	private JMenuItem menuItemLensBlurFilter;
 	private JMenuItem menuItemGrayscale;
 	private JMenuItem menuItemInvert;
 	private JMenuItem menuItemBrightness;
@@ -199,7 +200,8 @@ public class ImageFrame extends JFrame implements ActionListener,
 		menuItemRedo.setEnabled(false);
 
 		menuProcessing = new JMenu("Processing");
-		menuItemBokehBlurring = new JMenuItem("Bokeh Blurring");
+		menuItemGaussianFilter = new JMenuItem("Gaussian Blurring");
+		menuItemLensBlurFilter = new JMenuItem("Lens Blurring");
 		menuItemGrayscale = new JMenuItem("Grayscale");
 		menuItemInvert = new JMenuItem("Invert");
 		menuItemBrightness = new JMenuItem("Brightness");
@@ -211,7 +213,8 @@ public class ImageFrame extends JFrame implements ActionListener,
 		menuItemPixelate = new JMenuItem("Pixelate");
 		menuItemConvertToASCII = new JMenuItem("Image to ASCII");
 
-		menuItemBokehBlurring.addActionListener(this);
+		menuItemGaussianFilter.addActionListener(this);
+		menuItemLensBlurFilter.addActionListener(this);
 		menuItemGrayscale.addActionListener(this);
 		menuItemInvert.addActionListener(this);
 		menuItemBrightness.addActionListener(this);
@@ -222,7 +225,8 @@ public class ImageFrame extends JFrame implements ActionListener,
 		menuItemPixelate.addActionListener(this);
 		menuItemConvertToASCII.addActionListener(this);
 
-		menuProcessing.add(menuItemBokehBlurring);
+		menuProcessing.add(menuItemGaussianFilter);
+		menuProcessing.add(menuItemLensBlurFilter);
 		menuProcessing.add(menuItemGrayscale);
 		menuProcessing.add(menuItemInvert);
 		menuProcessing.add(menuItemBrightness);
@@ -233,7 +237,8 @@ public class ImageFrame extends JFrame implements ActionListener,
 		menuProcessing.add(menuItemPixelate);
 		menuProcessing.add(menuItemConvertToASCII);
 
-		menuItemBokehBlurring.setEnabled(false);
+		menuItemGaussianFilter.setEnabled(false);
+		menuItemLensBlurFilter.setEnabled(false);
 		menuItemGrayscale.setEnabled(false);
 		menuItemInvert.setEnabled(false);
 		menuItemBrightness.setEnabled(false);
@@ -383,7 +388,8 @@ public class ImageFrame extends JFrame implements ActionListener,
 				menuItemSave.setEnabled(true);
 				menuItemUndo.setEnabled(true);
 				menuItemRedo.setEnabled(true);
-				menuItemBokehBlurring.setEnabled(true);
+				menuItemGaussianFilter.setEnabled(true);
+				menuItemLensBlurFilter.setEnabled(true);
 				menuItemGrayscale.setEnabled(true);
 				menuItemInvert.setEnabled(true);
 				menuItemBrightness.setEnabled(true);
@@ -459,10 +465,19 @@ public class ImageFrame extends JFrame implements ActionListener,
 		curImageIndex++;
 	}
 
-	private void imageBokehBlurring() {
-		resultImage = ImageProcessor.bokehBlurring(inputImage);
+	private void imageGaussianBlurring() {
+		resultImage = ImageProcessor.gaussianFilter(inputImage);
 		imagePanelProcessed.setImage(resultImage);
-		infoBar.setText(" Info.: Blurring the image with Bokeh blurring");
+		infoBar.setText(" Info.: Blurring the image with gaussian blurring");
+		addToImageBuffer(resultImage);
+		textProcessed.setVisible(false);
+		frameProcessed.setVisible(true);
+	}
+
+	private void imageLensBlurring() {
+		resultImage = ImageProcessor.lensBlurFilter(inputImage);
+		imagePanelProcessed.setImage(resultImage);
+		infoBar.setText(" Info.: Blurring the image with lens blurring");
 		addToImageBuffer(resultImage);
 		textProcessed.setVisible(false);
 		frameProcessed.setVisible(true);
@@ -600,8 +615,10 @@ public class ImageFrame extends JFrame implements ActionListener,
 			imageFileSave();
 		else if (source == menuItemExit)
 			System.exit(0);
-		else if (source == menuItemBokehBlurring)
-			imageBokehBlurring();
+		else if (source == menuItemGaussianFilter)
+			imageGaussianBlurring();
+		else if (source == menuItemLensBlurFilter)
+			imageLensBlurring();
 		else if (source == menuItemGrayscale)
 			imageGrayscale();
 		else if (source == menuItemInvert)

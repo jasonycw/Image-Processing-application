@@ -40,24 +40,29 @@ public class ImageProcessor {
 		return resultImg;
 	}
 
-	// TODO: finish the blurring effect
-	public static BufferedImage bokehBlurring(Image img) {
+	public static BufferedImage gaussianFilter(Image img){
 		// GaussianFilter
-//		 Blurring blr = new Blurring(5);
-//		 BufferedImage bufImg = blr.gaussianBlur(img);
-
-		// Lens Blur
+		Blurring blr = new Blurring((float) (0.01*convert(img).getHeight()));
+		BufferedImage bufImg = blr.gaussianBlur(img);
+		return bufImg;
+	}
+	
+	// TODO: finish the blurring effect
+	public static BufferedImage lensBlurFilter(Image img) {
+		// initialization
 		LensBlurFilter lensBlur = new LensBlurFilter();
 		BufferedImage inImg = convert(img);
 		BufferedImage bufImg = new BufferedImage(inImg.getWidth(),
 				inImg.getHeight(), BufferedImage.TYPE_INT_RGB);
+		
+		// setting
 		lensBlur.setSides(20);
 		lensBlur.setBloom(1);
 		lensBlur.setRadius((float) (0.01*inImg.getHeight()));
 		lensBlur.setBloomThreshold(210);
+		
+		// do the filter from inImg to bufImg and return back the resulting image
 		lensBlur.filter(inImg, bufImg);
-
-		// return back the resulting image in BufferedImage type
 		return bufImg;
 	}
 
