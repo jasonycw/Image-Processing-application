@@ -1,4 +1,5 @@
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,6 +8,8 @@ import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
+
+import org.apache.commons.codec.binary.Base64;
 
 public class Util {
 	private static final String TAG = "Util";
@@ -52,16 +55,18 @@ public class Util {
 		String v = readStringAttr(img, attr);
 		if (v == null)
 			return null;
-		System.out.println("String.length: "+v.length());
-//		System.out.println("String: "+v);
-		return DatatypeConverter.parseBase64Binary(v);
+		System.out.println("String.length: " + v.length());
+
+		// Works with small image only
+		// return DatatypeConverter.parseBase64Binary(v);
+		
+		return Base64.decodeBase64(v);
 	}
 
 	public static String removeBlockHeaders(String img) {
 		final String marker = readStringAttr(img, "xmpNote:HasExtendedXMP");
 		if (marker == null)
 			return img;
-
 
 		StringBuffer sb = new StringBuffer();
 
@@ -75,21 +80,21 @@ public class Util {
 
 		return sb.toString();
 	}
-	
-//	public static String encodeToString(BufferedImage image, String type) {
-//		String imageString = null;
-//		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//
-//		try {
-//			ImageIO.write(image, type, bos);
-//			byte[] imageBytes = bos.toByteArray();
-//
-//			imageString = DatatypeConverter.printBase64Binary(imageBytes);
-//
-//			bos.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		return imageString;
-//	}
+
+	// public static String encodeToString(BufferedImage image, String type) {
+	// String imageString = null;
+	// ByteArrayOutputStream bos = new ByteArrayOutputStream();
+	//
+	// try {
+	// ImageIO.write(image, type, bos);
+	// byte[] imageBytes = bos.toByteArray();
+	//
+	// imageString = DatatypeConverter.printBase64Binary(imageBytes);
+	//
+	// bos.close();
+	// } catch (IOException e) {
+	// e.printStackTrace();
+	// }
+	// return imageString;
+	// }
 }
