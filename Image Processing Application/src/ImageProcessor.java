@@ -53,7 +53,9 @@ public class ImageProcessor {
 		// Return the depth map BufferedImage
 		DepthMap depthMap = new DepthMap(file);
 		BufferedImage depthImage = depthMap.getDepthImage();
-		return depthImage;
+		BufferedImage result = new BufferedImage(depthImage.getWidth(),depthImage.getHeight(),BufferedImage.TYPE_INT_RGB);
+		result.getGraphics().drawImage(depthImage, 0, 0, null);
+		return result;
 	}
 	
 	public static BufferedImage gaussianFilter(Image img){

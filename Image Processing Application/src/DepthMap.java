@@ -136,8 +136,10 @@ public class DepthMap {
 
 	private BufferedImage readBufferImage(byte[] imageDataInByte) {
 		if (this.isValid()) {
-			InputStream in = new ByteArrayInputStream(imageDataInByte);
+			System.out.println(imageDataInByte.toString());
+			ByteArrayInputStream in = new ByteArrayInputStream(imageDataInByte);
 			try {
+				// TODO: check why large Google Camera photo is not accepted
 				BufferedImage result = ImageIO.read(in);
 				return result;
 			} catch (IOException e) {
