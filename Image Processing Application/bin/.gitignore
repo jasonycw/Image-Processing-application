@@ -20,3 +20,6 @@
 /AbstractBufferedImageOp.class
 /LensBlurFilter.class
 /FFT.class
+/DepthMapImage.class
+/DepthMap.class
+/Util.class

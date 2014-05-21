@@ -68,6 +68,7 @@ public class ImageFrame extends JFrame implements ActionListener,
 	private JMenuItem menuItemExit;
 	private JMenuItem menuItemUndo;
 	private JMenuItem menuItemRedo;
+	private JMenuItem menuItemGetDepthMapFromGoogleCamera;
 	private JMenuItem menuItemGaussianFilter;
 	private JMenuItem menuItemLensBlurFilter;
 	private JMenuItem menuItemGrayscale;
@@ -88,6 +89,7 @@ public class ImageFrame extends JFrame implements ActionListener,
 
 	// ------------------------------------------
 
+	private File file;
 	private BufferedImage inputImage;
 	private BufferedImage resultImage;
 	private JScrollPane scrollPane;
@@ -200,6 +202,7 @@ public class ImageFrame extends JFrame implements ActionListener,
 		menuItemRedo.setEnabled(false);
 
 		menuProcessing = new JMenu("Processing");
+		menuItemGetDepthMapFromGoogleCamera = new JMenuItem("Get Depth Map");
 		menuItemGaussianFilter = new JMenuItem("Gaussian Blurring");
 		menuItemLensBlurFilter = new JMenuItem("Lens Blurring");
 		menuItemGrayscale = new JMenuItem("Grayscale");
@@ -213,6 +216,7 @@ public class ImageFrame extends JFrame implements ActionListener,
 		menuItemPixelate = new JMenuItem("Pixelate");
 		menuItemConvertToASCII = new JMenuItem("Image to ASCII");
 
+		menuItemGetDepthMapFromGoogleCamera.addActionListener(this);
 		menuItemGaussianFilter.addActionListener(this);
 		menuItemLensBlurFilter.addActionListener(this);
 		menuItemGrayscale.addActionListener(this);
@@ -225,6 +229,7 @@ public class ImageFrame extends JFrame implements ActionListener,
 		menuItemPixelate.addActionListener(this);
 		menuItemConvertToASCII.addActionListener(this);
 
+		menuProcessing.add(menuItemGetDepthMapFromGoogleCamera);
 		menuProcessing.add(menuItemGaussianFilter);
 		menuProcessing.add(menuItemLensBlurFilter);
 		menuProcessing.add(menuItemGrayscale);
@@ -237,6 +242,7 @@ public class ImageFrame extends JFrame implements ActionListener,
 		menuProcessing.add(menuItemPixelate);
 		menuProcessing.add(menuItemConvertToASCII);
 
+		menuItemGetDepthMapFromGoogleCamera.setEnabled(false);
 		menuItemGaussianFilter.setEnabled(false);
 		menuItemLensBlurFilter.setEnabled(false);
 		menuItemGrayscale.setEnabled(false);
@@ -331,7 +337,7 @@ public class ImageFrame extends JFrame implements ActionListener,
 		int returnVal = fileChooser.showOpenDialog(this);
 
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			File file = fileChooser.getSelectedFile();
+			file = fileChooser.getSelectedFile();
 
 			try {
 				inputImage = ImageIO.read(file);
@@ -388,6 +394,7 @@ public class ImageFrame extends JFrame implements ActionListener,
 				menuItemSave.setEnabled(true);
 				menuItemUndo.setEnabled(true);
 				menuItemRedo.setEnabled(true);
+				menuItemGetDepthMapFromGoogleCamera.setEnabled(true);
 				menuItemGaussianFilter.setEnabled(true);
 				menuItemLensBlurFilter.setEnabled(true);
 				menuItemGrayscale.setEnabled(true);
@@ -465,6 +472,18 @@ public class ImageFrame extends JFrame implements ActionListener,
 		curImageIndex++;
 	}
 
+	public void imageDepthMapRetrieve(){
+		resultImage = ImageProcessor.getDepthMapForGoogleCameraImage(file);
+		if(resultImage !=null){
+		imagePanelProcessed.setImage(resultImage);
+		infoBar.setText(" Info.: Get depth map from Google Camera's Lens Blur photo");
+		addToImageBuffer(resultImage);
+		textProcessed.setVisible(false);
+		frameProcessed.setVisible(true);}
+		else
+			infoBar.setText(" Info.: Fail to load depth map");
+	}
+	
 	private void imageGaussianBlurring() {
 		resultImage = ImageProcessor.gaussianFilter(inputImage);
 		imagePanelProcessed.setImage(resultImage);
@@ -615,6 +634,8 @@ public class ImageFrame extends JFrame implements ActionListener,
 			imageFileSave();
 		else if (source == menuItemExit)
 			System.exit(0);
+		else if (source ==menuItemGetDepthMapFromGoogleCamera)
+			imageDepthMapRetrieve();
 		else if (source == menuItemGaussianFilter)
 			imageGaussianBlurring();
 		else if (source == menuItemLensBlurFilter)

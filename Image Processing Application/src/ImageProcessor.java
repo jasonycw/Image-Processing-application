@@ -14,8 +14,11 @@ Edit with CARE!!!!
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
+
 import javax.swing.*;
+
 import java.util.*;
+import java.io.File;
 import java.lang.Math;
 
 public class ImageProcessor {
@@ -40,6 +43,19 @@ public class ImageProcessor {
 		return resultImg;
 	}
 
+	public static BufferedImage getDepthMapForGoogleCameraImage(File file){
+		// Turn image to string
+		
+		// Get the GDepth:Data from image as byte[] or string
+		
+		// Turn byte[] or string to BufferedImage
+		
+		// Return the depth map BufferedImage
+		DepthMap depthMap = new DepthMap(file);
+		BufferedImage depthImage = depthMap.getDepthImage();
+		return depthImage;
+	}
+	
 	public static BufferedImage gaussianFilter(Image img){
 		// GaussianFilter
 		Blurring blr = new Blurring((float) (0.01*convert(img).getHeight()));
