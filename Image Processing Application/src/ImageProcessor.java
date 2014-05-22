@@ -43,37 +43,62 @@ public class ImageProcessor {
 		return resultImg;
 	}
 
-	public static BufferedImage gaussianFilterWithDepthMap(File file){
+	public static BufferedImage gaussianFilterWithDepthMap(File file) {
 		// Get depthMap
 		DepthImage depthImage = new DepthImage(file);
-		if(!depthImage.isValid())
+		if (!depthImage.isValid())
 			return null;
-		BufferedImage depthMap = depthImage.getDepthMapImage();
+		BufferedImage depthMap = toGrayScale(depthImage.getDepthMapImage());
 		BufferedImage originImage = depthImage.getOriginalColorImage();
+		BufferedImage result = new BufferedImage(depthMap.getWidth(),
+				depthMap.getHeight(), BufferedImage.TYPE_INT_RGB);
+
+		// Store the gray value of the depth map for further calculation
+		int maxGrayVal = 0;
+		int minGrayVal = 999;
+		int grayVal[][] = new int[result.getWidth()][result.getHeight()];
+		// Scan through each row of the image
+		for (int j = 0; j < result.getHeight(); j++) {
+			// Scan through each columns of the image
+			for (int i = 0; i < result.getWidth(); i++) {
+				// Returns an integer pixel in the default RGB color model
+				int values = originImage.getRGB(i, j);
+				// Convert the single integer pixel value to RGB color
+				Color color = new Color(values);
+				// Store all the gray value
+				grayVal[i][j] = color.getRed();
+				if(grayVal[i][j] < minGrayVal)
+					minGrayVal = grayVal[i][j];
+				if(grayVal[i][j] > maxGrayVal)
+					maxGrayVal = grayVal[i][j];
+			}
+		}
 		
-		// TODO: blur the background using depthMap
+		// TODO: Set color of the result image according to the gray value (depth value)
 		
-		return originImage;
+
+		return result;
 	}
-	
-	public static BufferedImage getDepthMapForGoogleCameraImage(File file){
+
+	public static BufferedImage getDepthMapForGoogleCameraImage(File file) {
 		// Extract the depthImage
 		DepthImage depthImage = new DepthImage(file);
 		BufferedImage depthMap = depthImage.getDepthMapImage();
-		
+
 		// Change the type of the image for saving correctly
-		BufferedImage result = new BufferedImage(depthMap.getWidth(),depthMap.getHeight(),BufferedImage.TYPE_INT_RGB);
+		BufferedImage result = new BufferedImage(depthMap.getWidth(),
+				depthMap.getHeight(), BufferedImage.TYPE_INT_RGB);
 		result.getGraphics().drawImage(depthMap, 0, 0, null);
 		return result;
 	}
-	
-	public static BufferedImage gaussianFilter(Image img){
+
+	public static BufferedImage gaussianFilter(Image img) {
 		// GaussianFilter
-		Blurring blr = new Blurring((float) (0.01*convert(img).getHeight()));
+		Blurring blr = new Blurring((float) (0.01 * convert(img).getHeight()));
 		BufferedImage bufImg = blr.gaussianBlur(img);
 		return bufImg;
 	}
-	
+
 	// TODO: finish the blurring effect
 	public static BufferedImage lensBlurFilter(Image img) {
 		// initialization
@@ -81,14 +106,15 @@ public class ImageProcessor {
 		BufferedImage inImg = convert(img);
 		BufferedImage bufImg = new BufferedImage(inImg.getWidth(),
 				inImg.getHeight(), BufferedImage.TYPE_INT_RGB);
-		
+
 		// setting
 		lensBlur.setSides(20);
 		lensBlur.setBloom(1);
-		lensBlur.setRadius((float) (0.01*inImg.getHeight()));
+		lensBlur.setRadius((float) (0.01 * inImg.getHeight()));
 		lensBlur.setBloomThreshold(210);
-		
-		// do the filter from inImg to bufImg and return back the resulting image
+
+		// do the filter from inImg to bufImg and return back the resulting
+		// image
 		lensBlur.filter(inImg, bufImg);
 		return bufImg;
 	}
@@ -190,11 +216,6 @@ public class ImageProcessor {
 		return null;
 	}
 
-	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Start of Part
-	// A~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-	// ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! Grade this method please.
-	// :) ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! !
 	// Done and Optimized~~~~~~
 	public static BufferedImage randomPixelMovement(Image img, int nDegree) {
 		// Open a new image for playing graphic magic~ :)
@@ -240,9 +261,6 @@ public class ImageProcessor {
 		}
 		return resultImg;// Simpliy return the product and happy~ ^^
 	}
-
-	// ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! End ! ! ! ! ! ! ! ! ! ! !
-	// ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! !
 
 	// Done.......................
 	public static BufferedImage spinning(Image img, double fDegree) {
@@ -355,8 +373,7 @@ public class ImageProcessor {
 		return resultImg;
 	}
 
-	// Done and
-	// Optimized~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	// Done and Optimized~~~~~~~~~~~~~~~~~~~~~
 	public static BufferedImage pixelate(Image img, int pixel) {
 		// Open a new image for playing graphic magic~ :)
 		BufferedImage bufImg = convert(img);
@@ -401,9 +418,6 @@ public class ImageProcessor {
 		}
 		return resultImg;// Simpliy return the product and happy~ ^^
 	}
-
-	// ----------------------------------------------------+! End of ALL Part A
-	// questions !+-----------------------------------------------
 
 	public static void RGBtoHSV(int R, int G, int B, float[] HSV) {
 		// R,G,B in [0,255]
@@ -493,8 +507,6 @@ public class ImageProcessor {
 		return rgb;
 	}
 
-	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Start of Part
-	// B~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	public static BufferedImage preservingPartColor(Image img,
 			boolean[][] mask, int colorVal, int rgValue, int rbValue,
 			int gbValue) {
@@ -502,8 +514,6 @@ public class ImageProcessor {
 		return null;
 	}
 
-	// ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! Grade this method please.
-	// :) ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! !
 	// Done and Optimized~~~~~~
 	public static char[][] imageToASCII(Image img) {
 		BufferedImage bufImg = toGrayScale(img);
@@ -588,7 +598,3 @@ public class ImageProcessor {
 		return asciiChar;// Simpliy return the product and happy~ ^^
 	}
 }
-// ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! End ! ! ! ! ! ! ! ! ! ! ! ! !
-// ! ! ! ! ! ! ! ! ! ! ! ! ! !
-// ----------------------------------------------------+! End of ALL Part B
-// questions !+-----------------------------------------------
