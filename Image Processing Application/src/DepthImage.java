@@ -9,7 +9,7 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
-public class DepthMap {
+public class DepthImage {
 
 	private double blurAtInfinity;
 	private double focalDistance;
@@ -20,12 +20,12 @@ public class DepthMap {
 	private String depthMime;
 	private double depthNear;
 	private double depthFar;
-	private byte[] depthImage;
+	private byte[] depthMapImage;
 
 	public String colourMime;
-	public byte[] colourImage;
+	public byte[] originalColorImage;
 
-	public DepthMap() {
+	public DepthImage() {
 		blurAtInfinity = Double.NaN;
 		focalDistance = Double.NaN;
 		focalPointX = Double.NaN;
@@ -34,12 +34,12 @@ public class DepthMap {
 		depthMime = null;
 		depthNear = Double.NaN;
 		depthFar = Double.NaN;
-		depthImage = null;
+		depthMapImage = null;
 		colourMime = null;
-		colourImage = null;
+		originalColorImage = null;
 	}
 
-	public DepthMap(File file) {
+	public DepthImage(File file) {
 		// Try turn BufferedImage to img
 		// DataBufferByte data = (DataBufferByte)
 		// img.getRaster().getDataBuffer();
@@ -87,18 +87,18 @@ public class DepthMap {
 			System.out.println("7.  depthNear: " + depthNear);
 		if (depthFar != Double.NaN)
 			System.out.println("8.  depthFar: " + depthFar);
-		if (depthImage != null)
-			System.out.println("9.  depthImage: " + depthImage);
+		if (depthMapImage != null)
+			System.out.println("9.  depthImage: " + depthMapImage);
 		if (colourMime != null)
 			System.out.println("10. colourMime: " + colourMime);
-		if (colourImage != null)
-			System.out.println("11. colourImage: " + colourImage);
+		if (originalColorImage != null)
+			System.out.println("11. colourImage: " + originalColorImage);
 
 		return (blurAtInfinity != Double.NaN && focalDistance != Double.NaN
 				&& focalPointX != Double.NaN && focalPointY != Double.NaN
 				&& depthFormat != null && depthMime != null
 				&& depthNear != Double.NaN && depthFar != Double.NaN
-				&& depthImage != null && colourMime != null && colourImage != null);
+				&& depthMapImage != null && colourMime != null && originalColorImage != null);
 	}
 
 	private void loadImageData(String img) {
@@ -122,18 +122,22 @@ public class DepthMap {
 		this.depthNear = Util.readFloatAttr(img, "GDepth:Near");
 		this.depthFar = Util.readFloatAttr(img, "GDepth:Far");
 
-		this.colourImage = Util.readBase64Attr(img, "GImage:Data");
-		if (colourImage != null)
-			System.out.println(colourImage.length);
-		this.depthImage = Util.readBase64Attr(img, "GDepth:Data");
-		if (depthImage != null)
-			System.out.println(depthImage.length);
+		this.originalColorImage = Util.readBase64Attr(img, "GImage:Data");
+		if (originalColorImage != null)
+			System.out.println(originalColorImage.length);
+		this.depthMapImage = Util.readBase64Attr(img, "GDepth:Data");
+		if (depthMapImage != null)
+			System.out.println(depthMapImage.length);
 	}
 
-	public BufferedImage getDepthImage() {
-		return readBufferImage(this.depthImage);
+	public BufferedImage getDepthMapImage() {
+		return readBufferImage(this.depthMapImage);
 	}
 
+	public BufferedImage getOriginalColorImage() {
+		return readBufferImage(this.originalColorImage);
+	}
+	
 	private BufferedImage readBufferImage(byte[] imageDataInByte) {
 		if (this.isValid()) {
 			System.out.println(imageDataInByte.toString());
@@ -152,4 +156,6 @@ public class DepthMap {
 			return null;
 		}
 	}
+
+	
 }

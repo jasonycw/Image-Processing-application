@@ -43,18 +43,27 @@ public class ImageProcessor {
 		return resultImg;
 	}
 
+	public static BufferedImage gaussianFilterWithDepthMap(File file){
+		// Get depthMap
+		DepthImage depthImage = new DepthImage(file);
+		if(!depthImage.isValid())
+			return null;
+		BufferedImage depthMap = depthImage.getDepthMapImage();
+		BufferedImage originImage = depthImage.getOriginalColorImage();
+		
+		// TODO: blur the background using depthMap
+		
+		return originImage;
+	}
+	
 	public static BufferedImage getDepthMapForGoogleCameraImage(File file){
-		// Turn image to string
+		// Extract the depthImage
+		DepthImage depthImage = new DepthImage(file);
+		BufferedImage depthMap = depthImage.getDepthMapImage();
 		
-		// Get the GDepth:Data from image as byte[] or string
-		
-		// Turn byte[] or string to BufferedImage
-		
-		// Return the depth map BufferedImage
-		DepthMap depthMap = new DepthMap(file);
-		BufferedImage depthImage = depthMap.getDepthImage();
-		BufferedImage result = new BufferedImage(depthImage.getWidth(),depthImage.getHeight(),BufferedImage.TYPE_INT_RGB);
-		result.getGraphics().drawImage(depthImage, 0, 0, null);
+		// Change the type of the image for saving correctly
+		BufferedImage result = new BufferedImage(depthMap.getWidth(),depthMap.getHeight(),BufferedImage.TYPE_INT_RGB);
+		result.getGraphics().drawImage(depthMap, 0, 0, null);
 		return result;
 	}
 	

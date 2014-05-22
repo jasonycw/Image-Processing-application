@@ -68,6 +68,7 @@ public class ImageFrame extends JFrame implements ActionListener,
 	private JMenuItem menuItemExit;
 	private JMenuItem menuItemUndo;
 	private JMenuItem menuItemRedo;
+	private JMenuItem menuItemGaussianFilterForGoogleCamera;
 	private JMenuItem menuItemGetDepthMapFromGoogleCamera;
 	private JMenuItem menuItemGaussianFilter;
 	private JMenuItem menuItemLensBlurFilter;
@@ -202,13 +203,14 @@ public class ImageFrame extends JFrame implements ActionListener,
 		menuItemRedo.setEnabled(false);
 
 		menuProcessing = new JMenu("Processing");
+		menuItemGaussianFilterForGoogleCamera = new JMenuItem(
+				"Blur with Depth Map");
 		menuItemGetDepthMapFromGoogleCamera = new JMenuItem("Get Depth Map");
 		menuItemGaussianFilter = new JMenuItem("Gaussian Blurring");
 		menuItemLensBlurFilter = new JMenuItem("Lens Blurring");
 		menuItemGrayscale = new JMenuItem("Grayscale");
 		menuItemInvert = new JMenuItem("Invert");
 		menuItemBrightness = new JMenuItem("Brightness");
-
 		menuItemPreservingPartColor = new JMenuItem("Preserving Partial Colors");
 		menuItemRandomPixelMovement = new JMenuItem("Random Pixel Movement");
 		menuItemSpinning = new JMenuItem("Spinning");
@@ -216,6 +218,7 @@ public class ImageFrame extends JFrame implements ActionListener,
 		menuItemPixelate = new JMenuItem("Pixelate");
 		menuItemConvertToASCII = new JMenuItem("Image to ASCII");
 
+		menuItemGaussianFilterForGoogleCamera.addActionListener(this);
 		menuItemGetDepthMapFromGoogleCamera.addActionListener(this);
 		menuItemGaussianFilter.addActionListener(this);
 		menuItemLensBlurFilter.addActionListener(this);
@@ -229,6 +232,7 @@ public class ImageFrame extends JFrame implements ActionListener,
 		menuItemPixelate.addActionListener(this);
 		menuItemConvertToASCII.addActionListener(this);
 
+		menuProcessing.add(menuItemGaussianFilterForGoogleCamera);
 		menuProcessing.add(menuItemGetDepthMapFromGoogleCamera);
 		menuProcessing.add(menuItemGaussianFilter);
 		menuProcessing.add(menuItemLensBlurFilter);
@@ -242,6 +246,7 @@ public class ImageFrame extends JFrame implements ActionListener,
 		menuProcessing.add(menuItemPixelate);
 		menuProcessing.add(menuItemConvertToASCII);
 
+		menuItemGaussianFilterForGoogleCamera.setEnabled(false);
 		menuItemGetDepthMapFromGoogleCamera.setEnabled(false);
 		menuItemGaussianFilter.setEnabled(false);
 		menuItemLensBlurFilter.setEnabled(false);
@@ -394,6 +399,7 @@ public class ImageFrame extends JFrame implements ActionListener,
 				menuItemSave.setEnabled(true);
 				menuItemUndo.setEnabled(true);
 				menuItemRedo.setEnabled(true);
+				menuItemGaussianFilterForGoogleCamera.setEnabled(true);
 				menuItemGetDepthMapFromGoogleCamera.setEnabled(true);
 				menuItemGaussianFilter.setEnabled(true);
 				menuItemLensBlurFilter.setEnabled(true);
@@ -472,18 +478,30 @@ public class ImageFrame extends JFrame implements ActionListener,
 		curImageIndex++;
 	}
 
-	public void imageDepthMapRetrieve(){
-		resultImage = ImageProcessor.getDepthMapForGoogleCameraImage(file);
-		if(resultImage !=null){
-		imagePanelProcessed.setImage(resultImage);
-		infoBar.setText(" Info.: Get depth map from Google Camera's Lens Blur photo");
-		addToImageBuffer(resultImage);
-		textProcessed.setVisible(false);
-		frameProcessed.setVisible(true);}
-		else
-			infoBar.setText(" Info.: Fail to load depth map");
+	public void imageBlurWithDepth(){
+		resultImage = ImageProcessor.gaussianFilterWithDepthMap(file);
+		if (resultImage != null) {
+			imagePanelProcessed.setImage(resultImage);
+			infoBar.setText(" Info.: Blur using depth map from Google Camera's Lens Blur photo");
+			addToImageBuffer(resultImage);
+			textProcessed.setVisible(false);
+			frameProcessed.setVisible(true);
+		} else
+			infoBar.setText(" Info.: File is not valid Google Camera's Lens Blur photo");
 	}
 	
+	public void imageDepthMapRetrieve() {
+		resultImage = ImageProcessor.getDepthMapForGoogleCameraImage(file);
+		if (resultImage != null) {
+			imagePanelProcessed.setImage(resultImage);
+			infoBar.setText(" Info.: Get depth map from Google Camera's Lens Blur photo");
+			addToImageBuffer(resultImage);
+			textProcessed.setVisible(false);
+			frameProcessed.setVisible(true);
+		} else
+			infoBar.setText(" Info.: Fail to load depth map");
+	}
+
 	private void imageGaussianBlurring() {
 		resultImage = ImageProcessor.gaussianFilter(inputImage);
 		imagePanelProcessed.setImage(resultImage);
@@ -634,7 +652,9 @@ public class ImageFrame extends JFrame implements ActionListener,
 			imageFileSave();
 		else if (source == menuItemExit)
 			System.exit(0);
-		else if (source ==menuItemGetDepthMapFromGoogleCamera)
+		else if (source==menuItemGaussianFilterForGoogleCamera)
+			imageBlurWithDepth();
+		else if (source == menuItemGetDepthMapFromGoogleCamera)
 			imageDepthMapRetrieve();
 		else if (source == menuItemGaussianFilter)
 			imageGaussianBlurring();
