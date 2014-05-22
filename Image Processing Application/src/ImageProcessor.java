@@ -53,10 +53,10 @@ public class ImageProcessor {
 		BufferedImage result = new BufferedImage(depthMap.getWidth(),
 				depthMap.getHeight(), BufferedImage.TYPE_INT_RGB);
 
-		// Store the gray value of the depth map for further calculation
-		int maxGrayVal = 0;
-		int minGrayVal = 999;
-		int grayVal[][] = new int[result.getWidth()][result.getHeight()];
+		// Store the depth value of the depth map for further calculation
+		int maxDepthValue = 0;
+		int minDepthValue = 999;
+		int depthValue[][] = new int[result.getWidth()][result.getHeight()];
 		// Scan through each row of the image
 		for (int j = 0; j < result.getHeight(); j++) {
 			// Scan through each columns of the image
@@ -65,16 +65,17 @@ public class ImageProcessor {
 				int values = originImage.getRGB(i, j);
 				// Convert the single integer pixel value to RGB color
 				Color color = new Color(values);
-				// Store all the gray value
-				grayVal[i][j] = color.getRed();
-				if(grayVal[i][j] < minGrayVal)
-					minGrayVal = grayVal[i][j];
-				if(grayVal[i][j] > maxGrayVal)
-					maxGrayVal = grayVal[i][j];
+				// Store all the gray value as the depth value
+				depthValue[i][j] = color.getRed();
+				if(depthValue[i][j] < minDepthValue)
+					minDepthValue = depthValue[i][j];
+				if(depthValue[i][j] > maxDepthValue)
+					maxDepthValue = depthValue[i][j];
 			}
 		}
 		
 		// TODO: Set color of the result image according to the gray value (depth value)
+		// Proof: Depth can be extract from the depthMap
 		
 
 		return result;
