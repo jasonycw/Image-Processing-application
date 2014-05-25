@@ -123,11 +123,7 @@ public class DepthImage {
 		this.depthFar = Util.readFloatAttr(img, "GDepth:Far");
 
 		this.originalColorImage = Util.readBase64Attr(img, "GImage:Data");
-		if (originalColorImage != null)
-			System.out.println(originalColorImage.length);
 		this.depthMapImage = Util.readBase64Attr(img, "GDepth:Data");
-		if (depthMapImage != null)
-			System.out.println(depthMapImage.length);
 	}
 
 	public BufferedImage getDepthMapImage() {

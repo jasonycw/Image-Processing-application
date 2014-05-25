@@ -35,7 +35,6 @@ public class Util {
 	}
 
 	public static String readStringAttr(String img, String attr) {
-		System.out.println("img.length: " + img.length());
 		Pattern pat = Pattern.compile(attr + "=\"([^\"]*)\"",
 				Pattern.CASE_INSENSITIVE);
 		Matcher m = pat.matcher(img);
@@ -56,13 +55,8 @@ public class Util {
 		String v = readStringAttr(img, attr);
 		if (v == null)
 			return null;
-		System.out.println("String.length: " + v.length());
-//		System.out.println("String: "+v.toString());
-		
 
 		// Works with small image only
-		// return DatatypeConverter.parseBase64Binary(v);
-		
 		return Base64.decodeBase64(v);
 	}
 

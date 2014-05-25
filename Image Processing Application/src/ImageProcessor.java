@@ -22,6 +22,10 @@ import java.io.File;
 import java.lang.Math;
 
 public class ImageProcessor {
+	private static final int RED = 0;
+	private static final int GREEN = 1;
+	private static final int BLUE = 2;
+	
 	// The BufferedImage class describes an Image with an accessible buffer of
 	// image data
 	public static BufferedImage convert(Image img) {
@@ -56,28 +60,69 @@ public class ImageProcessor {
 		// Store the depth value of the depth map for further calculation
 		int maxDepthValue = 0;
 		int minDepthValue = 999;
-		int depthValue[][] = new int[result.getWidth()][result.getHeight()];
+		int depthValues[][] = new int[result.getWidth()][result.getHeight()];
 		// Scan through each row of the image
 		for (int j = 0; j < result.getHeight(); j++) {
 			// Scan through each columns of the image
 			for (int i = 0; i < result.getWidth(); i++) {
 				// Returns an integer pixel in the default RGB color model
-				int values = originImage.getRGB(i, j);
+				int values = depthMap.getRGB(i, j);
 				// Convert the single integer pixel value to RGB color
 				Color color = new Color(values);
 				// Store all the gray value as the depth value
-				depthValue[i][j] = color.getRed();
-				if(depthValue[i][j] < minDepthValue)
-					minDepthValue = depthValue[i][j];
-				if(depthValue[i][j] > maxDepthValue)
-					maxDepthValue = depthValue[i][j];
+				depthValues[i][j] = color.getRed();
+				if (depthValues[i][j] < minDepthValue)
+					minDepthValue = depthValues[i][j];
+				if (depthValues[i][j] > maxDepthValue)
+					maxDepthValue = depthValues[i][j];
 			}
 		}
 		
-		// TODO: Set color of the result image according to the gray value (depth value)
-		// Proof: Depth can be extract from the depthMap
+		System.out.println("maxDepthValue: "+maxDepthValue);
+		System.out.println("minDepthValue: "+minDepthValue);
+		System.out.println("((maxDepthValue - minDepthValue) / 3): "+((maxDepthValue - minDepthValue) / 3));
+		System.out.println("(((maxDepthValue - minDepthValue) / 3) * 2): "+(((maxDepthValue - minDepthValue) / 3) * 2));
 		
-
+		// TODO: Set color of the result image according to the gray value
+		// (depth value)
+		// Proof: Depth can be extract from the depthMap
+		int color[] = { 255, 0, 0 };
+		for (int j = 0; j < result.getHeight(); j++) {
+			for (int i = 0; i < result.getWidth(); i++) {
+				int depthValue = depthValues[i][j];
+//				int relativeDepthColor = (int) (255 * ((depthValue - minDepthValue) * 1.0 / (maxDepthValue - minDepthValue)));
+				color[RED] = 255;
+				color[GREEN] = 0;
+				color[BLUE] = 0;
+				if ((depthValue - minDepthValue) > ((maxDepthValue - minDepthValue) / 3)) {
+					color[RED] = 0;
+					color[GREEN] = 255;
+					color[BLUE] = 0;
+				}
+				if ((depthValue - minDepthValue) > (((maxDepthValue - minDepthValue) / 3) * 2)) {
+					color[RED] = 0;
+					color[GREEN] = 0;
+					color[BLUE] = 255;
+				}
+				// int depthDifference = depthValue - lastDepth;
+				// if (depthDifference > 5) {
+				// // depth increase
+				// int temp = color[0];
+				// color[0] = color[1];
+				// color[1] = color[2];
+				// color[2] = temp;
+				// } else if (depthDifference < -5) {
+				// // depth decrease
+				// int temp = color[0];
+				// color[0] = color[2];
+				// color[2] = color[1];
+				// color[1] = temp;
+				// }
+				// lastDepth = depthValues[i][j];
+				result.setRGB(i, j,
+						new Color(color[RED], color[GREEN], color[BLUE]).getRGB());
+			}
+		}
 		return result;
 	}
 
