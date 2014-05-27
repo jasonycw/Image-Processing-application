@@ -17,6 +17,10 @@ import java.awt.image.*;
 
 import javax.swing.*;
 
+import depthMap.DepthImage;
+import filter.GaussianBlur.Blurring;
+import filter.LensBlur.LensBlurFilter;
+
 import java.util.*;
 import java.io.File;
 import java.lang.Math;

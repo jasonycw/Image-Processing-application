@@ -7,6 +7,9 @@ import java.awt.*;
 import java.awt.image.*;
 import java.awt.geom.*;
 
+import filter.GaussianBlur.PixelUtils;
+import filter.LensBlur.AbstractBufferedImageOp;
+
 /**
  * A filter which applies a convolution kernel to an image.
  * @author Jerry Huxtable

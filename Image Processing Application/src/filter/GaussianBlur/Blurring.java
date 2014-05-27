@@ -1,3 +1,4 @@
+package filter.GaussianBlur;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.Kernel;
@@ -78,7 +79,7 @@ public class Blurring {
 		return bi;
 	}
 
-	protected static BufferedImage gaussianBlur(Image img) {
+	public static BufferedImage gaussianBlur(Image img) {
 		BufferedImage src = convert(img);
 		BufferedImage dst = new BufferedImage(src.getWidth(), src.getHeight(),
 				BufferedImage.TYPE_INT_RGB);
