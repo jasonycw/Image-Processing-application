@@ -12,8 +12,7 @@ import javax.imageio.ImageIO;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-public class ImageFrame extends JFrame implements ActionListener,
-		ChangeListener, MouseMotionListener, MouseListener {
+public class ImageFrame extends JFrame implements ActionListener, ChangeListener, MouseMotionListener, MouseListener {
 	private JDesktopPane theDesktop;
 	private JInternalFrame frameOriginal;
 	private JInternalFrame frameProcessed;
@@ -68,6 +67,7 @@ public class ImageFrame extends JFrame implements ActionListener,
 	private JMenuItem menuItemExit;
 	private JMenuItem menuItemUndo;
 	private JMenuItem menuItemRedo;
+	private JMenuItem menuItemBokehTest;
 	private JMenuItem menuItemGaussianFilterForGoogleCamera;
 	private JMenuItem menuItemGetDepthMapFromGoogleCamera;
 	private JMenuItem menuItemGaussianFilter;
@@ -203,8 +203,8 @@ public class ImageFrame extends JFrame implements ActionListener,
 		menuItemRedo.setEnabled(false);
 
 		menuProcessing = new JMenu("Processing");
-		menuItemGaussianFilterForGoogleCamera = new JMenuItem(
-				"Blur with Depth Map");
+		menuItemBokehTest = new JMenuItem("Bokeh Test");
+		menuItemGaussianFilterForGoogleCamera = new JMenuItem("Blur with Depth Map");
 		menuItemGetDepthMapFromGoogleCamera = new JMenuItem("Get Depth Map");
 		menuItemGaussianFilter = new JMenuItem("Gaussian Blurring");
 		menuItemLensBlurFilter = new JMenuItem("Lens Blurring");
@@ -217,7 +217,7 @@ public class ImageFrame extends JFrame implements ActionListener,
 		menuItemPinching = new JMenuItem("Pinching");
 		menuItemPixelate = new JMenuItem("Pixelate");
 		menuItemConvertToASCII = new JMenuItem("Image to ASCII");
-
+		menuItemBokehTest.addActionListener(this);
 		menuItemGaussianFilterForGoogleCamera.addActionListener(this);
 		menuItemGetDepthMapFromGoogleCamera.addActionListener(this);
 		menuItemGaussianFilter.addActionListener(this);
@@ -231,7 +231,7 @@ public class ImageFrame extends JFrame implements ActionListener,
 		menuItemPinching.addActionListener(this);
 		menuItemPixelate.addActionListener(this);
 		menuItemConvertToASCII.addActionListener(this);
-
+		menuProcessing.add(menuItemBokehTest);
 		menuProcessing.add(menuItemGaussianFilterForGoogleCamera);
 		menuProcessing.add(menuItemGetDepthMapFromGoogleCamera);
 		menuProcessing.add(menuItemGaussianFilter);
@@ -245,7 +245,7 @@ public class ImageFrame extends JFrame implements ActionListener,
 		menuProcessing.add(menuItemPinching);
 		menuProcessing.add(menuItemPixelate);
 		menuProcessing.add(menuItemConvertToASCII);
-
+		menuItemBokehTest.setEnabled(false);
 		menuItemGaussianFilterForGoogleCamera.setEnabled(false);
 		menuItemGetDepthMapFromGoogleCamera.setEnabled(false);
 		menuItemGaussianFilter.setEnabled(false);
@@ -336,8 +336,7 @@ public class ImageFrame extends JFrame implements ActionListener,
 	private void imageFileChooser() {
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setDialogTitle("Open a file");
-		fileChooser
-				.addChoosableFileFilter(new ExtensionFileDialogFilter("jpg"));
+		fileChooser.addChoosableFileFilter(new ExtensionFileDialogFilter("jpg"));
 
 		int returnVal = fileChooser.showOpenDialog(this);
 
@@ -351,15 +350,13 @@ public class ImageFrame extends JFrame implements ActionListener,
 				imagePanelProcessed.setImage(resultImage);
 
 				// ---------------------------
-				frameOriginal = new JInternalFrame("Original Image", true,
-						true, true, true);
+				frameOriginal = new JInternalFrame("Original Image", true, true, true, true);
 				frameOriginal.add(imagePanelOriginal, BorderLayout.CENTER);
 				frameOriginal.pack();
 				theDesktop.add(frameOriginal);
 				frameOriginal.setVisible(true);
 
-				frameProcessed = new JInternalFrame("Processed Image", true,
-						true, true, true);
+				frameProcessed = new JInternalFrame("Processed Image", true, true, true, true);
 				frameProcessed.add(imagePanelProcessed, BorderLayout.CENTER);
 				frameProcessed.pack();
 				theDesktop.add(frameProcessed);
@@ -367,16 +364,14 @@ public class ImageFrame extends JFrame implements ActionListener,
 				textPanelResult = new JTextPane();
 				sdoc = textPanelResult.getStyledDocument();
 
-				textProcessed = new JInternalFrame("Processed Image", true,
-						true, true, true);
+				textProcessed = new JInternalFrame("Processed Image", true, true, true, true);
 				textProcessed.add(textPanelResult, BorderLayout.CENTER);
 				textProcessed.pack();
 				theDesktop.add(textProcessed);
 
 				scrollPane = new JScrollPane(textPanelResult);
 				BufferedImage bufImg = ImageProcessor.convert(inputImage);
-				scrollPane.setPreferredSize(new Dimension(bufImg.getWidth(),
-						bufImg.getHeight()));
+				scrollPane.setPreferredSize(new Dimension(bufImg.getWidth(), bufImg.getHeight()));
 				textProcessed.add(scrollPane, BorderLayout.CENTER);
 				textProcessed.pack();
 
@@ -399,6 +394,7 @@ public class ImageFrame extends JFrame implements ActionListener,
 				menuItemSave.setEnabled(true);
 				menuItemUndo.setEnabled(true);
 				menuItemRedo.setEnabled(true);
+				menuItemBokehTest.setEnabled(true);
 				menuItemGaussianFilterForGoogleCamera.setEnabled(true);
 				menuItemGetDepthMapFromGoogleCamera.setEnabled(true);
 				menuItemGaussianFilter.setEnabled(true);
@@ -413,9 +409,8 @@ public class ImageFrame extends JFrame implements ActionListener,
 				menuItemPixelate.setEnabled(true);
 				menuItemConvertToASCII.setEnabled(true);
 
-				infoBar.setText(" Info.: Filename = " + file.getName()
-						+ ", Image's size = " + inputImage.getWidth() + " x "
-						+ inputImage.getHeight());
+				infoBar.setText(" Info.: Filename = " + file.getName() + ", Image's size = " + inputImage.getWidth() + " x "
+				        + inputImage.getHeight());
 				messageBuffer.add(infoBar.getText());
 
 				menuProcessing.setEnabled(true);
@@ -427,8 +422,7 @@ public class ImageFrame extends JFrame implements ActionListener,
 	private void imageFileSave() {
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setDialogTitle("Save file as..");
-		fileChooser
-				.addChoosableFileFilter(new ExtensionFileDialogFilter("jpg"));
+		fileChooser.addChoosableFileFilter(new ExtensionFileDialogFilter("jpg"));
 
 		int returnVal = fileChooser.showSaveDialog(this);
 
@@ -448,16 +442,14 @@ public class ImageFrame extends JFrame implements ActionListener,
 	private void imageUndo() {
 		if (curImageIndex > 0)
 			curImageIndex--;
-		imagePanelProcessed.setImage((Image) imageBuffer
-				.elementAt(curImageIndex));
+		imagePanelProcessed.setImage((Image) imageBuffer.elementAt(curImageIndex));
 		infoBar.setText((String) messageBuffer.elementAt(curImageIndex));
 	}
 
 	private void imageRedo() {
 		if (curImageIndex < imageBuffer.size() - 1)
 			curImageIndex++;
-		imagePanelProcessed.setImage((Image) imageBuffer
-				.elementAt(curImageIndex));
+		imagePanelProcessed.setImage((Image) imageBuffer.elementAt(curImageIndex));
 		infoBar.setText((String) messageBuffer.elementAt(curImageIndex));
 	}
 
@@ -478,7 +470,16 @@ public class ImageFrame extends JFrame implements ActionListener,
 		curImageIndex++;
 	}
 
-	public void imageBlurWithDepth(){
+	public void imageBokehTest() {
+		resultImage = ImageProcessor.bokehFilter(inputImage);
+		imagePanelProcessed.setImage(resultImage);
+		infoBar.setText(" Info.: Retrieve bokeh effect location");
+		addToImageBuffer(resultImage);
+		textProcessed.setVisible(false);
+		frameProcessed.setVisible(true);
+	}
+
+	public void imageBlurWithDepth() {
 		resultImage = ImageProcessor.gaussianFilterWithDepthMap(file);
 		if (resultImage != null) {
 			imagePanelProcessed.setImage(resultImage);
@@ -489,7 +490,7 @@ public class ImageFrame extends JFrame implements ActionListener,
 		} else
 			infoBar.setText(" Info.: File is not valid Google Camera's Lens Blur photo");
 	}
-	
+
 	public void imageDepthMapRetrieve() {
 		resultImage = ImageProcessor.getDepthMapForGoogleCameraImage(file);
 		if (resultImage != null) {
@@ -539,9 +540,8 @@ public class ImageFrame extends JFrame implements ActionListener,
 	}
 
 	private void imageBrightness() {
-		String str = JOptionPane.showInputDialog(this,
-				"Enter amount of brightness adjusted", "Input",
-				JOptionPane.QUESTION_MESSAGE);
+		String str = JOptionPane.showInputDialog(this, "Enter amount of brightness adjusted", "Input",
+		        JOptionPane.QUESTION_MESSAGE);
 		int nBrightness = Integer.parseInt(str);
 		resultImage = ImageProcessor.brighteningImage(inputImage, nBrightness);
 		imagePanelProcessed.setImage(resultImage);
@@ -552,8 +552,7 @@ public class ImageFrame extends JFrame implements ActionListener,
 	}
 
 	private void randomPixelMovement() {
-		String str = JOptionPane.showInputDialog(this, "Enter pixel offset",
-				"Input", JOptionPane.QUESTION_MESSAGE);
+		String str = JOptionPane.showInputDialog(this, "Enter pixel offset", "Input", JOptionPane.QUESTION_MESSAGE);
 		int offset = Integer.parseInt(str);
 		resultImage = ImageProcessor.randomPixelMovement(inputImage, offset);
 		imagePanelProcessed.setImage(resultImage);
@@ -563,8 +562,7 @@ public class ImageFrame extends JFrame implements ActionListener,
 	}
 
 	private void spinning() {
-		String str = JOptionPane.showInputDialog(this, "Enter degree of swirl",
-				"Input", JOptionPane.QUESTION_MESSAGE);
+		String str = JOptionPane.showInputDialog(this, "Enter degree of swirl", "Input", JOptionPane.QUESTION_MESSAGE);
 		double deg = Double.parseDouble(str);
 		resultImage = ImageProcessor.spinning(inputImage, deg);
 		imagePanelProcessed.setImage(resultImage);
@@ -574,8 +572,7 @@ public class ImageFrame extends JFrame implements ActionListener,
 	}
 
 	private void pixelate() {
-		String str = JOptionPane.showInputDialog(this, "Enter pixel size",
-				"Input", JOptionPane.QUESTION_MESSAGE);
+		String str = JOptionPane.showInputDialog(this, "Enter pixel size", "Input", JOptionPane.QUESTION_MESSAGE);
 		int size = Integer.parseInt(str);
 		resultImage = ImageProcessor.pixelate(inputImage, size);
 		imagePanelProcessed.setImage(resultImage);
@@ -652,7 +649,9 @@ public class ImageFrame extends JFrame implements ActionListener,
 			imageFileSave();
 		else if (source == menuItemExit)
 			System.exit(0);
-		else if (source==menuItemGaussianFilterForGoogleCamera)
+		else if (source == menuItemBokehTest)
+			imageBokehTest();
+		else if (source == menuItemGaussianFilterForGoogleCamera)
 			imageBlurWithDepth();
 		else if (source == menuItemGetDepthMapFromGoogleCamera)
 			imageDepthMapRetrieve();
@@ -716,8 +715,7 @@ public class ImageFrame extends JFrame implements ActionListener,
 			rbRangeValue = rbRange.getValue();
 		else if (source == gbRange)
 			gbRangeValue = gbRange.getValue();
-		System.out.println("State is change " + rgRangeValue + " "
-				+ rbRangeValue + " " + gbRangeValue);
+		System.out.println("State is change " + rgRangeValue + " " + rbRangeValue + " " + gbRangeValue);
 	}
 
 	public void mouseDragged(MouseEvent e) {
@@ -740,8 +738,8 @@ public class ImageFrame extends JFrame implements ActionListener,
 			pointColor[0] = color.getRed();
 			pointColor[1] = color.getGreen();
 			pointColor[2] = color.getBlue();
-			resultImage = ImageProcessor.preservingPartColor(inputImage, mask,
-					color.getRGB(), rgRangeValue, rbRangeValue, gbRangeValue);
+			resultImage = ImageProcessor.preservingPartColor(inputImage, mask, color.getRGB(), rgRangeValue, rbRangeValue,
+			        gbRangeValue);
 			imagePanelProcessed.setImage(resultImage);
 			imagePanelProcessed.repaint();
 			System.out.println("Mouse Right is pressed");

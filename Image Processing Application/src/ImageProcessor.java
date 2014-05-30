@@ -20,6 +20,7 @@ import javax.swing.*;
 import depthMap.DepthImage;
 import filter.GaussianBlur.Blurring;
 import filter.LensBlur.LensBlurFilter;
+import filter.bokeh.Bokeh;
 
 import java.util.*;
 import java.io.File;
@@ -168,6 +169,11 @@ public class ImageProcessor {
 		lensBlur.filter(inImg, bufImg);
 		return bufImg;
 	}
+	
+	public static BufferedImage bokehFilter(BufferedImage inputImage) {
+		Bokeh bokeh = new Bokeh(inputImage);
+	    return bokeh.getBokehEffectImage();
+    }
 
 	// A method to convert color image to grayscale image
 	public static BufferedImage toGrayScale(Image img)// <=====GRAY SCALE!!!!!
