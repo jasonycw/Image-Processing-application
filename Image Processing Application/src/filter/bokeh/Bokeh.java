@@ -10,8 +10,8 @@ public class Bokeh {
 	private BufferedImage bokehImage;// New image calculate using original image
 	private int height;
 	private int width;
-	private int bokehRadius = 2;
-	private int brightnessThreshold = 150;
+	private int bokehRadius = 3;
+	private int brightnessThreshold = 100;
 
 	public Bokeh() {
 		this.originalImage = null;
