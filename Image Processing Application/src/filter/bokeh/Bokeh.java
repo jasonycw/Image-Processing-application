@@ -10,8 +10,10 @@ public class Bokeh {
 	private BufferedImage bokehImage;// New image calculate using original image
 	private int height;
 	private int width;
-	private int bokehRadius = 3;
+	private int bokehRadius = 5;
+	private int checkRadius = 3;
 	private int brightnessThreshold = 100;
+	private int bokehBrightness = 200;
 
 	public Bokeh() {
 		this.originalImage = null;
@@ -36,7 +38,7 @@ public class Bokeh {
 	}
 
 	public void setRadius(int radius) {
-		this.bokehRadius = radius;
+		this.checkRadius = radius;
 	}
 
 	public void setBrightnessThreshold(int brightnessThreshold) {
@@ -59,7 +61,7 @@ public class Bokeh {
 
 		for (int j = 0; j < height; j++) {
 			for (int i = 0; i < width; i++) {
-				if (isBrighterThanSurrounding(i, j, image))
+				if (isBrighterThanSurrounding(i, j, image)&&brightnessOf(new Color(image.getRGB(i, j)))>this.bokehBrightness)
 					drawBokehEffect(i, j, resultImage);
 			}
 		}
@@ -79,8 +81,8 @@ public class Bokeh {
 		int totalGREEN = 0;
 		int totalBLUE = 0;
 		int numberOfPixelGathered = 0;
-		for (int i = this.bokehRadius; i > 0; i--)
-			for (int j = this.bokehRadius; j >= 0; j--) {
+		for (int i = this.checkRadius; i > 0; i--)
+			for (int j = this.checkRadius; j >= 0; j--) {
 				// Initialize 4 point for taking color around the pointColor
 				int xBottomRight = x + j;
 				int yBottomRight = y + i;
@@ -151,7 +153,8 @@ public class Bokeh {
 		// TODO Auto-generated method stub
 		Graphics2D g2d = resultImg.createGraphics();
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2d.setPaint(new Color(this.originalImage.getRGB(x, y)));
+		Color c = new Color(this.originalImage.getRGB(x, y));
+		g2d.setPaint(new Color(c.getRed(),c.getGreen(),c.getBlue(),100));
 		int length = this.bokehRadius * 2 + 1;
 		g2d.fillOval(x, y, length, length);
 		g2d.dispose();
